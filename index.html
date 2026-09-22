@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LayerLab — Custom 3D Prints</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+            color: #111111;
+        }
+        .announcement-bar {
+            background-color: #f4f4f5;
+            text-align: center;
+            padding: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            border-bottom: 1px solid #e4e4e7;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .categories {
+            display: flex;
+            gap: 20px;
+            color: #52525b;
+            font-size: 0.95rem;
+        }
+        .hero {
+            max-width: 800px;
+            margin: 60px auto;
+            text-align: center;
+            padding: 0 20px;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: #52525b;
+            line-height: 1.6;
+        }
+        .hero-btns {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .btn-black {
+            background-color: #000;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .btn-outline {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #e4e4e7;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .catalog-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 8px;
+            border: 1px solid #e4e4e7;
+            padding: 20px;
+            text-align: left;
+        }
+        .product-icon { font-size: 2.5rem; margin-bottom: 15px; }
+        .price-row { display: flex; gap: 10px; align-items: center; margin: 15px 0; }
+        .current-price { font-size: 1.25rem; font-weight: bold; }
+        .btn-add-cart {
+            background-color: #2ea44f;
+            color: #fff;
+            width: 100%;
+            padding: 12px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .owner-box {
+            display: none;
+            background: #fff9e6;
+            border: 1px dashed #ff9900;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 6px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="announcement-bar">MADE TO ORDER · SHIPS IN 48 HOURS</div>
+
+    <nav>
+        <div class="logo">L LayerLab</div>
+        <div class="categories">
+            <span>All products</span> <span>🪴 Planters</span> <span>🖥 Desk & Tech</span> <span>🎁 Gifts</span>
+        </div>
+        <div style="font-weight: 600;">
+            🛒 Cart: <span id="cart-counter">0</span>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div id="adminNotice" style="display:none; background:#2ea44f; color:#fff; padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold;">
+            🔓 Verified Owner Dynamic View Activated.
+        </div>
+        <h1>Printed for you, priced for every desk.</h1>
+        <p>Planters, desk gear, lamps, and gifts printed right on our bench.</p>
+        <div class="hero-btns">
+            <button class="btn-black">Shop the catalogue</button>
+            <button class="btn-outline" id="loginBtn" onclick="handleOwnerLogin()">Owner sign in</button>
+        </div>
+    </div>
+
+    <div class="catalog-section">
+        <div class="grid">
+            <!-- Product 1 -->
+            <div class="product-card" id="p1">
+                <div class="product-icon">🔑</div>
+                <h3 class="title">Custom Name Keychain</h3>
+                <p>Personalised, practical and made for you</p>
+                <div class="price-row"><div class="current-price price">₹299</div></div>
+                <button class="btn-add-cart" onclick="addToCart('Custom Name Keychain', 299)">Add to cart</button>
+                <div class="owner-box"><button onclick="editProduct('p1')" style="width:100%; padding:6px; background:#0366d6; color:white; border:none; border-radius:4px; cursor:pointer;">Edit Price</button></div>
+            </div>
+
+            <!-- Product 2 -->
+            <div class="product-card" id="p2">
+                <div class="product-icon">🐉</div>
+                <h3 class="title">Articulated Dragon</h3>
+                <p>Printed in one piece, moves like magic</p>
+                <div class="price-row"><div class="current-price price">₹899</div></div>
+                <button class="btn-add-cart" onclick="addToCart('Articulated Dragon', 899)">Add to cart</button>
+                <div class="owner-box"><button onclick="editProduct('p2')" style="width:100%; padding:6px; background:#0366d6; color:white; border:none; border-radius:4px; cursor:pointer;">Edit Price</button></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let count = 0;
+        let isOwner = false;
+
+        function addToCart(name, price) {
+            count++;
+            document.getElementById('cart-counter').innerText = count;
+            alert("🛒 " + name + " added to your cart!");
+        }
+
+        function handleOwnerLogin() {
+            if (isOwner) {
+                isOwner = false;
+                document.querySelectorAll('.owner-box').forEach(b => b.style.display = 'none');
+                document.getElementById('adminNotice').style.display = 'none';
+                document.getElementById('loginBtn').innerText = 'Owner sign in';
+                return;
+            }
+            let password = prompt("Enter owner password:");
+            if (password === "admin") {
+                isOwner = true;
+                document.querySelectorAll('.owner-box').forEach(b => b.style.display = 'block');
+                document.getElementById('adminNotice').style.display = 'block';
+                document.getElementById('loginBtn').innerText = 'Sign Out';
+            } else {
+                alert("Incorrect password.");
+            }
+        }
+
+        function editProduct(id) {
+            let card = document.getElementById(id);
+            let nPrice = prompt("Enter new price:", card.querySelector('.price').innerText);
+            if (nPrice) card.querySelector('.price').innerText = nPrice;
+        }
+    </script>
+</body>
+</html>
