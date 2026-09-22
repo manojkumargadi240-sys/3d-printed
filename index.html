@@ -5,21 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LayerLab — Custom 3D Prints</title>
     
-    <!-- Premium Vector Core Assets -->
+    <!-- Premium Icons CDN Link -->
     <link rel="stylesheet" href="https://cloudflare.com">
-    <link href="https://unpkg.com" rel="stylesheet">
 
     <style>
         :root {
             --neon-blue: #00f2fe;
-            --neon-green: #4facfe;
             --dark-card: #18181b;
         }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #0b0b0f; /* High-end dark ambient background theme */
+            background-color: #0b0b0f;
             color: #ffffff;
             overflow-x: hidden;
         }
@@ -44,57 +42,107 @@
             top: 0;
             z-index: 100;
         }
-        .logo { font-size: 1.5rem; font-weight: bold; color: #fff; letter-spacing: -0.5px; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #fff; }
         .logo span { color: var(--neon-blue); }
-        .categories span { margin-right: 20px; color: #a1a1aa; font-size: 0.95rem; cursor: pointer; transition: color 0.2s; }
-        .categories span:hover { color: #fff; }
+        .categories span { margin-right: 20px; color: #a1a1aa; font-size: 0.95rem; cursor: pointer; }
         
-        .hero { max-width: 800px; margin: 80px auto 40px auto; text-align: center; padding: 0 20px; }
+        .hero { max-width: 800px; margin: 60px auto 30px auto; text-align: center; padding: 0 20px; }
         .hero h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 15px; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* High-End Typewriter Styling */
         .typewriter-container { font-size: 1.25rem; color: #a1a1aa; height: 30px; margin-bottom: 30px; font-family: monospace; }
         .cursor { color: var(--neon-blue); animation: blink 0.7s infinite; font-weight: bold; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        .btn-black { background-color: #fff; color: #000; padding: 14px 28px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
-        .btn-black:hover { background-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); transform: translateY(-2px); }
-        .btn-outline { background-color: transparent; color: #fff; border: 1px solid #27272a; padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
-        .btn-outline:hover { background: #18181b; border-color: #52525b; }
+        .btn-black { background-color: #fff; color: #000; padding: 14px 28px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn-black:hover { background-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); }
+        .btn-outline { background-color: transparent; color: #fff; border: 1px solid #27272a; padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: 500; }
+        .btn-outline:hover { background: #18181b; }
 
-        .catalog-section { max-width: 1200px; margin: 80px auto; padding: 0 20px; }
-        .catalog-section h2 { font-size: 2.2rem; margin-bottom: 35px; font-weight: 700; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 35px; }
+        .main-layout {
+            display: flex;
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+            gap: 30px;
+        }
+        .catalog-section { flex: 3; }
+        .cart-sidebar {
+            flex: 1;
+            background: var(--dark-card);
+            border: 1px solid #27272a;
+            border-radius: 16px;
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
         
-        /* Floating Futuristic Title Card Framework */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
+        
         .product-card { 
             background: var(--dark-card); 
             border-radius: 16px; 
             border: 1px solid #27272a; 
-            padding: 28px; 
+            padding: 20px; 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between;
-            position: relative;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s ease;
         }
         .product-card:hover {
-            transform: translateY(-10px) scale(1.02);
+            transform: translateY(-5px);
             border-color: var(--neon-blue);
-            box-shadow: 0 20px 40px rgba(0, 242, 254, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.1);
         }
-        .product-icon { font-size: 2.5rem; color: #e4e4e7; margin-bottom: 20px; transition: transform 0.3s; }
-        .product-card:hover .product-icon { transform: rotate(-10px) scale(1.1); color: var(--neon-blue); }
-        .product-card h3 { margin: 0 0 10px 0; font-size: 1.3rem; font-weight: 600; color: #fff; }
-        .product-card p { margin: 0 0 20px 0; color: #a1a1aa; font-size: 0.95rem; line-height: 1.5; }
+
+        .product-image-container {
+            width: 100%;
+            height: 180px;
+            background-color: #0b0b0f;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #27272a;
+        }
+        .product-image-container img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease; }
+        .product-card:hover .product-image-container img { transform: scale(1.05); }
+
+        .product-card h3 { margin: 0 0 8px 0; font-size: 1.2rem; color: #fff; }
+        .product-card p { margin: 0 0 15px 0; color: #a1a1aa; font-size: 0.9rem; line-height: 1.4; }
+        .price-row { display: flex; gap: 10px; align-items: center; margin: 15px 0; }
+        .current-price { font-size: 1.3rem; font-weight: bold; color: #fff; }
         
-        .price-row { display: flex; gap: 10px; align-items: center; margin: 20px 0; }
-        .current-price { font-size: 1.4rem; font-weight: bold; color: #fff; }
-        
-        .btn-add-cart { background: transparent; color: #fff; border: 1px solid #fff; width: 100%; padding: 14px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .product-card:hover .btn-add-cart { background: #fff; color: #000; }
+        .btn-add-cart { background: transparent; color: #fff; border: 1px solid #fff; width: 100%; padding: 12px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-add-cart:hover { background: #fff; color: #000; }
         
         .owner-box { display: none; background: rgba(255, 153, 0, 0.1); border: 1px dashed #ff9900; padding: 10px; margin-top: 15px; border-radius: 8px; text-align: center; }
+        .cart-item { display: flex; justify-content: space-between; border-bottom: 1px solid #27272a; padding: 10px 0; font-size: 0.9rem; }
+        
+        /* 💳 PAYMENT METHOD SELECTOR STYLING */
+        .payment-methods-box {
+            margin-top: 15px;
+            background: #0b0b0f;
+            border: 1px solid #27272a;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .payment-methods-box h4 { margin: 0 0 10px 0; font-size: 0.85rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.5px; }
+        .payment-icons { display: flex; gap: 15px; font-size: 1.2rem; color: #e4e4e7; margin-bottom: 12px; }
+        .payment-select {
+            width: 100%;
+            padding: 8px;
+            background: #18181b;
+            color: white;
+            border: 1px solid #27272a;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .checkout-btn { background: linear-gradient(90deg, #00f2fe, #4facfe); color: #000; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; margin-top: 15px; cursor: pointer; }
         footer { border-top: 1px solid #27272a; padding: 40px; margin-top: 80px; text-align: center; color: #71717a; font-size: 0.9rem; }
     </style>
 </head>
@@ -104,87 +152,54 @@
 
     <nav>
         <div class="logo"><span>L</span> LayerLab</div>
-        <div class="categories">
-            <span>All products</span> <span>🪴 Planters</span> <span>🖥 Desk & Tech</span>
-        </div>
-        <div style="font-weight: 600; cursor: pointer; font-size: 1rem;">
-            🛒 Bag: <span id="cart-counter" style="background:var(--neon-blue); color:#000; padding:3px 10px; border-radius:20px; font-weight:bold;">0</span>
-        </div>
+        <div class="categories"><span>All products</span> <span>🪴 Planters</span> <span>🖥 Desk & Tech</span></div>
+        <div style="font-weight: 600; font-size: 1rem;">🛒 Items: <span id="cart-counter" style="background:var(--neon-blue); color:#000; padding:2px 8px; border-radius:12px;">0</span></div>
     </nav>
 
-    <div class="hero" data-aos="fade-up">
-        <div id="adminNotice" style="display:none; background:#2ea44f; color:#fff; padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold; box-shadow: 0 0 15px rgba(46,164,79,0.4);">
-            🔓 Welcome back, Owner. Dynamic updates enabled.
+    <div class="hero">
+        <div id="adminNotice" style="display:none; background:#2ea44f; color:#fff; padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold; text-align:center;">
+            🔓 Welcome back, Owner. Dynamic edit tools unlocked.
         </div>
         <h1>Printed for you, priced for every desk.</h1>
-        
-        <!-- Live Text Animation Output Target -->
-        <div class="typewriter-container">
-            <span id="typewriter-text"></span><span class="cursor">|</span>
-        </div>
-
+        <div class="typewriter-container"><span id="typewriter-text"></span><span class="cursor">|</span></div>
         <div class="hero-btns">
             <button class="btn-black">Shop the catalogue</button>
             <button class="btn-outline" id="loginBtn" onclick="handleOwnerLogin()">Owner sign in</button>
         </div>
     </div>
 
-    <div class="catalog-section">
-        <h2>Premium Grid Collection</h2>
-        <div class="grid">
-            
-            <!-- Product Card 1 -->
-            <div class="product-card" id="p1" data-aos="zoom-in-up" data-aos-delay="100">
-                <div>
-                    <div class="product-icon"><i class="fa-solid fa-key"></i></div>
-                    <h3 class="title">Custom Name Keychain</h3>
-                    <p>Personalised, practical and made to order for any key setup.</p>
-                    <div class="price-row"><div class="current-price price">₹299</div></div>
+    <div class="main-layout">
+        <div class="catalog-section">
+            <div class="grid">
+                
+                <!-- Product 1 -->
+                <div class="product-card" id="p1">
+                    <div>
+                        <div class="product-image-container">
+                            <img class="p-img" src="https://unsplash.com" alt="Product Image">
+                        </div>
+                        <h3 class="title">Custom Name Keychain</h3>
+                        <p>Personalised, practical and made to order.</p>
+                        <div class="price-row"><div class="current-price price">₹299</div></div>
+                    </div>
+                    <div>
+                        <button class="btn-add-cart" onclick="addToCart('Custom Name Keychain', 299)">Add to cart</button>
+                        <div class="owner-box"><button onclick="editProduct('p1')" style="width:100%; padding:8px; background:#0366d6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Modify Card</button></div>
+                    </div>
                 </div>
-                <div>
-                    <button class="btn-add-cart" onclick="addToCart('Custom Name Keychain', 299)">Add to cart</button>
-                    <div class="owner-box"><button onclick="editProduct('p1')" style="width:100%; padding:8px; background:#0366d6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Edit Details</button></div>
+
+                <!-- Product 2 -->
+                <div class="product-card" id="p2">
+                    <div>
+                        <div class="product-image-container">
+                            <img class="p-img" src="https://unsplash.com" alt="Product Image">
+                        </div>
+                        <h3 class="title">Articulated Dragon</h3>
+                        <p>Printed cleanly in one solid block. Hyper flexible.</p>
+                        <div class="price-row"><div class="current-price price">₹899</div></div>
+                    </div>
+                    <div>
+                        <button class="btn-add-cart" onclick="addToCart('Articulated Dragon', 899)">Add to cart</button>
+                        <div class="owner-box"><button onclick="editProduct('p2')" style="width:100%; padding:8px; background:#0366d6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Modify Card</button></div>
+                    </div>
                 </div>
-            </div>
-
-            <!-- Product Card 2 -->
-            <div class="product-card" id="p2" data-aos="zoom-in-up" data-aos-delay="200">
-                <div>
-                    <div class="product-icon"><i class="fa-solid fa-dragon"></i></div>
-                    <h3 class="title">Articulated Dragon</h3>
-                    <p>Printed cleanly in one solid block. Hyper flexible joints.</p>
-                    <div class="price-row"><div class="current-price price">₹899</div></div>
-                </div>
-                <div>
-                    <button class="btn-add-cart" onclick="addToCart('Articulated Dragon', 899)">Add to cart</button>
-                    <div class="owner-box"><button onclick="editProduct('p2')" style="width:100%; padding:8px; background:#0366d6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Edit Details</button></div>
-                </div>
-            </div>
-
-            <!-- Product Card 3 -->
-            <div class="product-card" id="p3" data-aos="zoom-in-up" data-aos-delay="300">
-                <div>
-                    <div class="product-icon"><i class="fa-solid fa-headphones"></i></div>
-                    <h3 class="title">Curved Headphone Stand</h3>
-                    <p>Sturdy geometric baseline structure keeps your headset secure.</p>
-                    <div class="price-row"><div class="current-price price">₹799</div></div>
-                </div>
-                <div>
-                    <button class="btn-add-cart" onclick="addToCart('Curved Headphone Stand', 799)">Add to cart</button>
-                    <div class="owner-box"><button onclick="editProduct('p3')" style="width:100%; padding:8px; background:#0366d6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Edit Details</button></div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <footer>
-        <p>&copy; 2026 LayerLab. Premium 3D Production Dashboard.</p>
-    </footer>
-
-    <!-- Execution Script Libraries -->
-    <script src="https://unpkg.com"></script>
-    <script>
-        AOS.init({ duration: 1000, once: true });
-
-        // DYNAMIC TYPEWRITER TEXT ANIMATION ENGINE CONFIGURATION
