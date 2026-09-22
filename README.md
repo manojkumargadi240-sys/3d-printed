@@ -24,6 +24,22 @@ This creates:
 - owner-only write access for `manojkumargadi240@gmail.com`
 - row-level security for product management
 
+Run the SQL in `supabase/orders-schema.sql` to add:
+- the `public.orders` table
+- owner-only read/write access for order management
+- order status tracking
+
+## Storage setup
+
+Create a public bucket called `product-images` in Supabase Storage if you want real product images instead of data URLs.
+
+Recommended bucket settings:
+- Public bucket: true
+- File size: as needed
+- Allowed MIME types: image/jpeg, image/png, image/webp, image/gif
+
+Then create a storage policy to allow upload only by the owner email.
+
 ## Frontend notes
 
 The website is configured with the public Supabase anon key and the owner email guard.
