@@ -1,6 +1,8 @@
-# LayerLab setup
+# 3d-printed
 
-This project uses a public storefront and a private owner studio.
+Website: https://dainty-phoenix-977f80.netlify.app
+
+This project is configured as a public storefront with a restricted owner studio.
 
 ## Required Supabase setup
 
@@ -16,43 +18,31 @@ This project uses a public storefront and a private owner studio.
 
 ## Database schema
 
-Run the SQL in `supabase/schema.sql` in the Supabase SQL editor.
+Run the SQL in `supabase/schema.sql` to create the `products` table and owner-only write rules.
 
-This creates:
-- the `public.products` table
-- public read access for the storefront
-- owner-only write access for `manojkumargadi240@gmail.com`
-- row-level security for product management
+Run the SQL in `supabase/orders-schema.sql` to create the `orders` table and owner-only tracking.
 
-Run the SQL in `supabase/orders-schema.sql` to add:
-- the `public.orders` table
-- owner-only read/write access for order management
-- order status tracking
+Run the SQL in `supabase/storage-schema.sql` to create storage policies for the `product-images` bucket.
 
-## Storage setup
+## Storage bucket
 
-Create a public bucket called `product-images` in Supabase Storage if you want real product images instead of data URLs.
+In Supabase Storage:
+- create a bucket named `product-images`
+- set it to Public: true
+- allowed MIME types: image/jpeg, image/png, image/webp, image/gif
 
-Recommended bucket settings:
-- Public bucket: true
-- File size: as needed
-- Allowed MIME types: image/jpeg, image/png, image/webp, image/gif
+## Owner login rule
 
-Then create a storage policy to allow upload only by the owner email.
-
-## Frontend notes
-
-The website is configured with the public Supabase anon key and the owner email guard.
-
-Owner access is allowed only when the signed-in GitHub email matches:
+The frontend only allows owner access when the signed-in GitHub email matches:
 - manojkumargadi240@gmail.com
+
+## Debug / demo
+
+If the database is not yet available, the app falls back to local browser storage so the storefront still works in preview mode.
 
 ## Important
 
-- Do not expose the Supabase service role key in the browser.
-- Do not commit private secrets to GitHub.
-- Keep the GitHub OAuth client secret in the Supabase provider settings only.
+- Do not expose the Supabase service role key in browser code.
+- Do not commit secrets to GitHub.
+- Keep the GitHub client secret in Supabase only.
 
-## Local test
-
-Open the site and sign in with GitHub using the owner email. The private owner panel will appear. Customers will only see the storefront.
