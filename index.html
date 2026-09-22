@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,100 +5,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LayerLab — Custom 3D Prints</title>
     
-    <!-- EXTERNAL EXTERIOR DESIGN LINKS (CDNs) -->
-    <!-- 1. Font Awesome 6 Icons Link -->
+    <!-- Premium Vector Core Assets -->
     <link rel="stylesheet" href="https://cloudflare.com">
-    <!-- 2. AOS Scroll Animation Engine Stylesheet -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com" rel="stylesheet">
 
     <style>
+        :root {
+            --neon-blue: #00f2fe;
+            --neon-green: #4facfe;
+            --dark-card: #18181b;
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #ffffff;
-            color: #111111;
+            background-color: #0b0b0f; /* High-end dark ambient background theme */
+            color: #ffffff;
             overflow-x: hidden;
         }
         .announcement-bar {
-            background-color: #f4f4f5;
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
             text-align: center;
             padding: 8px;
             font-size: 0.85rem;
-            font-weight: 500;
+            font-weight: bold;
+            color: #000;
+            letter-spacing: 1px;
         }
         nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px 40px;
-            border-bottom: 1px solid #e4e4e7;
+            background: rgba(11, 11, 15, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid #27272a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .logo { font-size: 1.5rem; font-weight: bold; }
-        .categories { display: flex; gap: 20px; color: #52525b; font-size: 0.95rem; }
-        .hero { max-width: 800px; margin: 60px auto; text-align: center; padding: 0 20px; }
-        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 20px; }
-        .hero p { font-size: 1.2rem; color: #52525b; line-height: 1.6; }
-        .hero-btns { display: flex; justify-content: center; gap: 15px; margin-top: 20px; }
-        .btn-black { background-color: #000; color: #fff; padding: 12px 24px; border-radius: 6px; border: none; cursor: pointer; font-weight: 500; transition: transform 0.2s; }
-        .btn-black:hover { transform: translateY(-2px); } /* Mini interaction hover motion */
-        .btn-outline { background-color: #fff; color: #000; border: 1px solid #e4e4e7; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 500; }
-        .catalog-section { max-width: 1200px; margin: 60px auto; padding: 0 20px; }
-        .catalog-section h2 { font-size: 2rem; margin-bottom: 25px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 30px; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #fff; letter-spacing: -0.5px; }
+        .logo span { color: var(--neon-blue); }
+        .categories span { margin-right: 20px; color: #a1a1aa; font-size: 0.95rem; cursor: pointer; transition: color 0.2s; }
+        .categories span:hover { color: #fff; }
         
-        /* Premium Card Layout Structure with Hover Micro-animations */
+        .hero { max-width: 800px; margin: 80px auto 40px auto; text-align: center; padding: 0 20px; }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -1.5px; margin-bottom: 15px; background: linear-gradient(to right, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* High-End Typewriter Styling */
+        .typewriter-container { font-size: 1.25rem; color: #a1a1aa; height: 30px; margin-bottom: 30px; font-family: monospace; }
+        .cursor { color: var(--neon-blue); animation: blink 0.7s infinite; font-weight: bold; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .btn-black { background-color: #fff; color: #000; padding: 14px 28px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: all 0.3s ease; }
+        .btn-black:hover { background-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); transform: translateY(-2px); }
+        .btn-outline { background-color: transparent; color: #fff; border: 1px solid #27272a; padding: 14px 28px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+        .btn-outline:hover { background: #18181b; border-color: #52525b; }
+
+        .catalog-section { max-width: 1200px; margin: 80px auto; padding: 0 20px; }
+        .catalog-section h2 { font-size: 2.2rem; margin-bottom: 35px; font-weight: 700; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 35px; }
+        
+        /* Floating Futuristic Title Card Framework */
         .product-card { 
-            background: #fff; 
-            border-radius: 12px; 
-            border: 1px solid #e4e4e7; 
-            padding: 24px; 
+            background: var(--dark-card); 
+            border-radius: 16px; 
+            border: 1px solid #27272a; 
+            padding: 28px; 
             display: flex; 
             flex-direction: column; 
             justify-content: space-between;
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            position: relative;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .product-card:hover {
-            transform: translateY(-8px); /* Card lifts up elegantly when hovered */
-            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--neon-blue);
+            box-shadow: 0 20px 40px rgba(0, 242, 254, 0.15);
         }
+        .product-icon { font-size: 2.5rem; color: #e4e4e7; margin-bottom: 20px; transition: transform 0.3s; }
+        .product-card:hover .product-icon { transform: rotate(-10px) scale(1.1); color: var(--neon-blue); }
+        .product-card h3 { margin: 0 0 10px 0; font-size: 1.3rem; font-weight: 600; color: #fff; }
+        .product-card p { margin: 0 0 20px 0; color: #a1a1aa; font-size: 0.95rem; line-height: 1.5; }
         
-        /* Upgraded External Vector Icon Font Styling */
-        .product-icon { 
-            font-size: 2.2rem; 
-            color: #27272a; 
-            margin-bottom: 15px;
-            transition: color 0.2s;
-        }
-        .product-card:hover .product-icon { color: #0366d6; } /* Icon turns corporate blue on hover */
+        .price-row { display: flex; gap: 10px; align-items: center; margin: 20px 0; }
+        .current-price { font-size: 1.4rem; font-weight: bold; color: #fff; }
         
-        .price-row { display: flex; gap: 10px; align-items: center; margin: 15px 0; }
-        .current-price { font-size: 1.25rem; font-weight: bold; }
-        .btn-add-cart { background-color: #000; color: #fff; width: 100%; padding: 12px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        .btn-add-cart:hover { background-color: #2ea44f; } /* Button flashes green on hover */
-        .owner-box { display: none; background: #fff9e6; border: 1px dashed #ff9900; padding: 10px; margin-top: 10px; border-radius: 6px; text-align: center; }
-        footer { background-color: #fafafa; border-top: 1px solid #e4e4e7; padding: 40px; margin-top: 60px; text-align: center; }
+        .btn-add-cart { background: transparent; color: #fff; border: 1px solid #fff; width: 100%; padding: 14px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .product-card:hover .btn-add-cart { background: #fff; color: #000; }
+        
+        .owner-box { display: none; background: rgba(255, 153, 0, 0.1); border: 1px dashed #ff9900; padding: 10px; margin-top: 15px; border-radius: 8px; text-align: center; }
+        footer { border-top: 1px solid #27272a; padding: 40px; margin-top: 80px; text-align: center; color: #71717a; font-size: 0.9rem; }
     </style>
 </head>
 <body>
 
-    <div class="announcement-bar">MADE TO ORDER · SHIPS IN 48 HOURS</div>
+    <div class="announcement-bar">MADE TO ORDER · SHIPS IN 48 HOURS ANYWHERE IN INDIA</div>
 
     <nav>
-        <div class="logo">L LayerLab</div>
+        <div class="logo"><span>L</span> LayerLab</div>
         <div class="categories">
-            <span>All products</span> <span>🪴 Planters</span> <span>🖥 Desk & Tech</span> <span>🎁 Gifts</span>
+            <span>All products</span> <span>🪴 Planters</span> <span>🖥 Desk & Tech</span>
         </div>
-        <div style="font-weight: 600; cursor: pointer;">🛒 Cart: <span id="cart-counter">0</span></div>
+        <div style="font-weight: 600; cursor: pointer; font-size: 1rem;">
+            🛒 Bag: <span id="cart-counter" style="background:var(--neon-blue); color:#000; padding:3px 10px; border-radius:20px; font-weight:bold;">0</span>
+        </div>
     </nav>
 
-    <!-- Hero Section with Title Fade-Down Animation -->
-    <div class="hero" data-aos="fade-down" data-aos-duration="1000">
-        <div id="adminNotice" style="display:none; background:#2ea44f; color:#fff; padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold;">
-            🔓 Verified Owner Dynamic View Activated.
+    <div class="hero" data-aos="fade-up">
+        <div id="adminNotice" style="display:none; background:#2ea44f; color:#fff; padding:12px; border-radius:6px; margin-bottom:20px; font-weight:bold; box-shadow: 0 0 15px rgba(46,164,79,0.4);">
+            🔓 Welcome back, Owner. Dynamic updates enabled.
         </div>
         <h1>Printed for you, priced for every desk.</h1>
-        <p>Planters, desk gear, lamps, and gifts printed right on our bench.</p>
+        
+        <!-- Live Text Animation Output Target -->
+        <div class="typewriter-container">
+            <span id="typewriter-text"></span><span class="cursor">|</span>
+        </div>
+
         <div class="hero-btns">
             <button class="btn-black">Shop the catalogue</button>
             <button class="btn-outline" id="loginBtn" onclick="handleOwnerLogin()">Owner sign in</button>
@@ -107,62 +130,48 @@
     </div>
 
     <div class="catalog-section">
-        <h2>All products</h2>
+        <h2>Premium Grid Collection</h2>
         <div class="grid">
             
-            <!-- Product 1: Custom Vector Key Icon with Slide-Up Entrance Motion -->
-            <div class="product-card" id="p1" data-aos="fade-up" data-aos-delay="100">
+            <!-- Product Card 1 -->
+            <div class="product-card" id="p1" data-aos="zoom-in-up" data-aos-delay="100">
                 <div>
                     <div class="product-icon"><i class="fa-solid fa-key"></i></div>
                     <h3 class="title">Custom Name Keychain</h3>
-                    <p>Personalised, practical and made for you</p>
+                    <p>Personalised, practical and made to order for any key setup.</p>
                     <div class="price-row"><div class="current-price price">₹299</div></div>
                 </div>
                 <div>
                     <button class="btn-add-cart" onclick="addToCart('Custom Name Keychain', 299)">Add to cart</button>
-                    <div class="owner-box"><button onclick="editProduct('p1')" style="width:100%; padding:6px; background:#0366d6; color:white; border:none; border-radius:4px; cursor:pointer;">Edit Price</button></div>
+                    <div class="owner-box"><button onclick="editProduct('p1')" style="width:100%; padding:8px; background:#0366d6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Edit Details</button></div>
                 </div>
             </div>
 
-            <!-- Product 2: Custom Vector Dragon/Gamepad Icon -->
-            <div class="product-card" id="p2" data-aos="fade-up" data-aos-delay="200">
+            <!-- Product Card 2 -->
+            <div class="product-card" id="p2" data-aos="zoom-in-up" data-aos-delay="200">
                 <div>
                     <div class="product-icon"><i class="fa-solid fa-dragon"></i></div>
                     <h3 class="title">Articulated Dragon</h3>
-                    <p>Printed in one piece, moves like magic</p>
+                    <p>Printed cleanly in one solid block. Hyper flexible joints.</p>
                     <div class="price-row"><div class="current-price price">₹899</div></div>
                 </div>
                 <div>
                     <button class="btn-add-cart" onclick="addToCart('Articulated Dragon', 899)">Add to cart</button>
-                    <div class="owner-box"><button onclick="editProduct('p2')" style="width:100%; padding:6px; background:#0366d6; color:white; border:none; border-radius:4px; cursor:pointer;">Edit Price</button></div>
+                    <div class="owner-box"><button onclick="editProduct('p2')" style="width:100%; padding:8px; background:#0366d6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Edit Details</button></div>
                 </div>
             </div>
 
-            <!-- Product 3: Audio Headphone Icon -->
-            <div class="product-card" id="p3" data-aos="fade-up" data-aos-delay="300">
+            <!-- Product Card 3 -->
+            <div class="product-card" id="p3" data-aos="zoom-in-up" data-aos-delay="300">
                 <div>
                     <div class="product-icon"><i class="fa-solid fa-headphones"></i></div>
                     <h3 class="title">Curved Headphone Stand</h3>
-                    <p>Give your headphones somewhere to live</p>
+                    <p>Sturdy geometric baseline structure keeps your headset secure.</p>
                     <div class="price-row"><div class="current-price price">₹799</div></div>
                 </div>
                 <div>
                     <button class="btn-add-cart" onclick="addToCart('Curved Headphone Stand', 799)">Add to cart</button>
-                    <div class="owner-box"><button onclick="editProduct('p3')" style="width:100%; padding:6px; background:#0366d6; color:white; border:none; border-radius:4px; cursor:pointer;">Edit Price</button></div>
-                </div>
-            </div>
-
-            <!-- Product 4: Plant/Flower Icon -->
-            <div class="product-card" id="p4" data-aos="fade-up" data-aos-delay="400">
-                <div>
-                    <div class="product-icon"><i class="fa-solid fa-seedling"></i></div>
-                    <h3 class="title">Pocket Planter Trio</h3>
-                    <p>Three tiny homes for tiny green friends</p>
-                    <div class="price-row"><div class="current-price price">₹450</div></div>
-                </div>
-                <div>
-                    <button class="btn-add-cart" onclick="addToCart('Pocket Planter Trio', 450)">Add to cart</button>
-                    <div class="owner-box"><button onclick="editProduct('p4')" style="width:100%; padding:6px; background:#0366d6; color:white; border:none; border-radius:4px; cursor:pointer;">Edit Price</button></div>
+                    <div class="owner-box"><button onclick="editProduct('p3')" style="width:100%; padding:8px; background:#0366d6; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Edit Details</button></div>
                 </div>
             </div>
 
@@ -170,30 +179,12 @@
     </div>
 
     <footer>
-        <p>&copy; 2026 LayerLab. Prices in Indian rupees.</p>
+        <p>&copy; 2026 LayerLab. Premium 3D Production Dashboard.</p>
     </footer>
 
-    <!-- EXTERNAL ANIMATION ENGINE SCRIPT MODULES -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Execution Script Libraries -->
+    <script src="https://unpkg.com"></script>
     <script>
-        // Start the animation core automatically on screen generation
-        AOS.init({
-            duration: 800,
-            once: true
-        });
+        AOS.init({ duration: 1000, once: true });
 
-        let count = 0;
-        let isOwner = false;
-        const ACCESS_PASSWORD = "admin";
-
-        function addToCart(name, price) {
-            count++;
-            document.getElementById('cart-counter').innerText = count;
-            alert("🛒 " + name + " added to your cart!");
-        }
-
-        function handleOwnerLogin() {
-            if (isOwner) {
-                isOwner = false;
-                document.querySelectorAll('.owner-box').forEach(b => b.style.display = 'none');
-                document.getElementById('adminNotice').style.display = 'none';
+        // DYNAMIC TYPEWRITER TEXT ANIMATION ENGINE CONFIGURATION
