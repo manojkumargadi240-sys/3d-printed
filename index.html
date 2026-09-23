@@ -322,7 +322,7 @@
     <div class="logo"><em>L</em>ayerLab</div>
     <div class="links"><a href="#shop">Collection</a></div>
     <div class="nav-actions">
-      <button class="owner-login" id="ownerLogin">Owner sign in</button>
+      <button class="owner-login" id="ownerLogin" hidden>Owner sign in</button>
       <button class="cart" id="cartButton">Basket <b id="count">0</b></button>
     </div>
   </nav>
@@ -397,7 +397,9 @@
       const SUPABASE_URL = 'https://fmcqnllutxfrgswnqand.supabase.co';
       const SUPABASE_ANON_KEY = 'sb_publishable_aI-4FtF0wIRj1rFmYm_WWw_g6zJqhj8';
       const OWNER_EMAIL = 'manojkumargadi240@gmail.com';
-      const redirectUrl = window.location.origin + window.location.pathname;
+      const params = new URLSearchParams(window.location.search);
+      const isAdminAccess = params.get('admin') === 'layerlab';
+      const redirectUrl = window.location.origin + window.location.pathname + (isAdminAccess ? '?admin=layerlab' : '');
 
       const ownerLogin = document.getElementById('ownerLogin');
       const ownerPanel = document.getElementById('ownerPanel');
@@ -427,6 +429,14 @@
       ];
 
       let cart = JSON.parse(localStorage.getItem('layerlab-cart') || '[]');
+
+      function showOwnerButton(visible) {
+        if (visible) {
+          ownerLogin.hidden = false;
+        } else {
+          ownerLogin.hidden = true;
+        }
+      }
 
       function saveCart() {
         localStorage.setItem('layerlab-cart', JSON.stringify(cart));
@@ -471,6 +481,9 @@
 
       function setOwnerState(user) {
         const isOwner = !!user && user.email && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
+        const shouldShowOwnerButton = isAdminAccess || isOwner;
+
+        showOwnerButton(shouldShowOwnerButton);
 
         if (user && isOwner) {
           ownerEmail.textContent = user.email;
