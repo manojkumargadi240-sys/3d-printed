@@ -715,7 +715,6 @@
       <a class="link-button" href="#contact">Contact</a>
     </div>
     <div class="nav-actions">
-      <button class="owner-login" id="ownerLogin" hidden>Owner sign in</button>
       <button class="cart" id="cartButton">Basket <b id="count">0</b></button>
     </div>
   </nav>
@@ -948,19 +947,19 @@
         const isOwner = !!user && user.email && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase();
         const shouldShowOwnerButton = isAdminAccess || isOwner;
 
-        ownerLogin.hidden = !shouldShowOwnerButton;
+        if (ownerLogin) ownerLogin.hidden = !shouldShowOwnerButton;
 
         if (user && isOwner) {
           ownerEmail.textContent = user.email;
-          ownerLogin.textContent = 'Owner: ' + user.email.split('@')[0];
+          if (ownerLogin) ownerLogin.textContent = 'Owner: ' + user.email.split('@')[0];
           ownerPanel.hidden = false;
         } else if (user) {
           ownerEmail.textContent = 'Access denied: ' + user.email;
-          ownerLogin.textContent = 'Owner sign in';
+          if (ownerLogin) ownerLogin.textContent = 'Owner sign in';
           ownerPanel.hidden = true;
         } else {
           ownerEmail.textContent = 'Not signed in';
-          ownerLogin.textContent = 'Owner sign in';
+          if (ownerLogin) ownerLogin.textContent = 'Owner sign in';
           ownerPanel.hidden = true;
         }
 
@@ -990,44 +989,48 @@
         }
       }
 
-      ownerLogin.addEventListener('click', async () => {
-        if (!supabase) {
-          alert('Supabase auth is not available in this browser session.');
-          return;
-        }
-
-        try {
-          const { data: { user }, error: getUserError } = await supabase.auth.getUser();
-          if (getUserError) console.warn('getUser error:', getUserError.message);
-
-          if (user && user.email && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
-            const { error } = await supabase.auth.signOut();
-            if (error) console.error(error);
-            setOwnerState(null);
+      if (ownerLogin) {
+        ownerLogin.addEventListener('click', async () => {
+          if (!supabase) {
+            alert('Supabase auth is not available in this browser session.');
             return;
           }
 
-          const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'github',
-            options: { redirectTo: redirectUrl }
-          });
+          try {
+            const { data: { user }, error: getUserError } = await supabase.auth.getUser();
+            if (getUserError) console.warn('getUser error:', getUserError.message);
 
-          if (error) throw error;
-        } catch (err) {
-          console.error(err);
-          alert('Owner login failed. Please check the GitHub auth setup in Supabase.');
-        }
-      });
+            if (user && user.email && user.email.toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+              const { error } = await supabase.auth.signOut();
+              if (error) console.error(error);
+              setOwnerState(null);
+              return;
+            }
 
-      signOutBtn.addEventListener('click', async () => {
-        if (!supabase) return;
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-          alert(error.message);
-          return;
-        }
-        setOwnerState(null);
-      });
+            const { error } = await supabase.auth.signInWithOAuth({
+              provider: 'github',
+              options: { redirectTo: redirectUrl }
+            });
+
+            if (error) throw error;
+          } catch (err) {
+            console.error(err);
+            alert('Owner login failed. Please check the GitHub auth setup in Supabase.');
+          }
+        });
+      }
+
+      if (signOutBtn) {
+        signOutBtn.addEventListener('click', async () => {
+          if (!supabase) return;
+          const { error } = await supabase.auth.signOut();
+          if (error) {
+            alert(error.message);
+            return;
+          }
+          setOwnerState(null);
+        });
+      }
 
       productForm.addEventListener('submit', (event) => {
         event.preventDefault();
@@ -1054,12 +1057,13 @@
         alert(`Order created for ₹${cart.reduce((sum, item) => sum + item.price, 0).toLocaleString('en-IN')}`);
       });
 
-      document.addEventListener('mousemove', (event) => {
-        if (!spotlightCard) return;
-        const x = (event.clientX / window.innerWidth - 0.5) * 18;
-        const y = (event.clientY / window.innerHeight - 0.5) * 18;
-        spotlightCard.style.transform = `perspective(900px) rotateX(${(-y).toFixed(2)}deg) rotateY(${x.toFixed(2)}deg) translateY(-4px)`;
-      });
+      if (spotlightCard) {
+        document.addEventListener('mousemove', (event) => {
+          const x = (event.clientX / window.innerWidth - 0.5) * 18;
+          const y = (event.clientY / window.innerHeight - 0.5) * 18;
+          spotlightCard.style.transform = `perspective(900px) rotateX(${(-y).toFixed(2)}deg) rotateY(${x.toFixed(2)}deg) translateY(-4px)`;
+        });
+      }
 
       const revealItems = document.querySelectorAll('.reveal');
       const observer = new IntersectionObserver((entries) => {
