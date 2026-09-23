@@ -650,10 +650,10 @@
       }) : null;
 
       const sampleProducts = [
-        { name: 'Fold Desk Tray', price: 1499, image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80', category: 'Desk & Tech' },
-        { name: 'Botanic Planter', price: 1299, image: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=900&q=80', category: 'Planters' },
-        { name: 'Stone Coaster Set', price: 899, image: 'https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=900&q=80', category: 'Tabletop' },
-        { name: 'Name Plate', price: 1999, image: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80', category: 'Personalised' },
+        { id: 'sample-1', name: 'Fold Desk Tray', price: 1499, image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80', category: 'Desk & Tech' },
+        { id: 'sample-2', name: 'Botanic Planter', price: 1299, image: 'https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?auto=format&fit=crop&w=900&q=80', category: 'Planters' },
+        { id: 'sample-3', name: 'Stone Coaster Set', price: 899, image: 'https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=900&q=80', category: 'Tabletop' },
+        { id: 'sample-4', name: 'Name Plate', price: 1999, image: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80', category: 'Personalised' },
       ];
 
       let cart = [];
@@ -666,9 +666,21 @@
         cart = [];
       }
 
+      function normalizeProduct(product) {
+        const id = product.id ?? `${String(product.name || 'product').trim()}-${String(product.price || 0)}`;
+        return {
+          ...product,
+          id,
+          name: String(product.name || 'Unnamed product').trim(),
+          price: Number(product.price || 0),
+          image: product.image || 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80',
+          category: product.category || 'Desk & Tech'
+        };
+      }
+
       function saveCart() {
         localStorage.setItem('layerlab-cart', JSON.stringify(cart));
-        const total = cart.reduce((sum, item) => sum + Number(item.price || 0), 0);
+        const total = cart.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0);
         const count = cart.reduce((sum, item) => sum + Number(item.qty || 1), 0);
         totalDisplay.textContent = `₹${total.toLocaleString('en-IN')}`;
         countDisplay.textContent = count;
@@ -694,7 +706,7 @@
 
         cartItems.querySelectorAll('.qty-btn').forEach((btn) => {
           btn.addEventListener('click', () => {
-            const id = Number(btn.dataset.id);
+            const id = String(btn.dataset.id);
             const action = btn.dataset.action;
             updateCartItem(id, action);
           });
@@ -702,28 +714,25 @@
 
         cartItems.querySelectorAll('.remove-btn').forEach((btn) => {
           btn.addEventListener('click', () => {
-            const id = Number(btn.dataset.id);
-            cart = cart.filter(item => item.id !== id);
+            const id = String(btn.dataset.id);
+            cart = cart.filter(item => String(item.id) !== id);
             saveCart();
           });
         });
       }
 
       function updateCartItem(id, action) {
-        cart = cart.map(item => {
-          if (item.id !== id) return item;
-
-          if (action === 'increase') {
-            return { ...item, qty: (item.qty || 1) + 1 };
-          }
-
-          if (action === 'decrease') {
-            const nextQty = (item.qty || 1) - 1;
-            return nextQty <= 0 ? null : { ...item, qty: nextQty };
-          }
-
-          return item;
-        }).filter(Boolean);
+        cart = cart
+          .map((item) => {
+            if (String(item.id) !== String(id)) return item;
+            if (action === 'increase') return { ...item, qty: (item.qty || 1) + 1 };
+            if (action === 'decrease') {
+              const nextQty = (item.qty || 1) - 1;
+              return nextQty <= 0 ? null : { ...item, qty: nextQty };
+            }
+            return item;
+          })
+          .filter(Boolean);
         saveCart();
       }
 
@@ -742,18 +751,46 @@
         productsHost.querySelectorAll('.shop-button').forEach((button) => {
           button.addEventListener('click', () => {
             const index = Number(button.dataset.index);
-            const selected = products[index];
-            const existing = cart.find(item => item.id === selected.id);
+            const selected = normalizeProduct(products[index]);
+            const existing = cart.find(item => String(item.id) === String(selected.id));
 
             if (existing) {
               existing.qty = (existing.qty || 1) + 1;
             } else {
-              cart.push({ ...selected, id: selected.id || Date.now() + Math.random(), qty: 1 });
+              cart.push({ ...selected, qty: 1 });
             }
 
             saveCart();
           });
         });
+      }
+
+      async function loadProducts() {
+        if (!supabase) {
+          products = sampleProducts.map(normalizeProduct);
+          renderProducts();
+          return;
+        }
+
+        try {
+          const { data, error } = await supabase
+            .from('products')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (error) throw error;
+
+          if (Array.isArray(data) && data.length) {
+            products = data.map(normalizeProduct);
+          } else {
+            products = sampleProducts.map(normalizeProduct);
+          }
+        } catch (err) {
+          console.warn('Product table unavailable, using fallback sample products.', err);
+          products = sampleProducts.map(normalizeProduct);
+        }
+
+        renderProducts();
       }
 
       function setOwnerState(user) {
@@ -816,27 +853,49 @@
         const total = cart.reduce((sum, item) => sum + (Number(item.price) * (Number(item.qty || 1))), 0);
         const itemLines = cart.map((item) => `- ${item.name} x ${item.qty || 1} — ₹${(Number(item.price) * (Number(item.qty || 1))).toLocaleString('en-IN')}`).join('\n');
 
-        return `New LayerLab order\n\nCustomer: ${document.getElementById('customerName').value.trim()}\nPhone: ${document.getElementById('customerPhone').value.trim()}\nEmail: ${document.getElementById('customerEmail').value.trim()}\nAddress: ${document.getElementById('customerAddress').value.trim()}\nNotes: ${document.getElementById('customerNotes').value.value || 'None'}\n\nItems:\n${itemLines}\n\nTotal: ₹${total.toLocaleString('en-IN')}`;
+        return `New LayerLab order\n\nCustomer: ${document.getElementById('customerName').value.trim()}\nPhone: ${document.getElementById('customerPhone').value.trim()}\nEmail: ${document.getElementById('customerEmail').value.trim()}\nAddress: ${document.getElementById('customerAddress').value.trim()}\nNotes: ${document.getElementById('customerNotes').value.trim() || 'None'}\n\nItems:\n${itemLines}\n\nTotal: ₹${total.toLocaleString('en-IN')}`;
       }
 
-      productForm.addEventListener('submit', (event) => {
+      productForm.addEventListener('submit', async (event) => {
         event.preventDefault();
+
         const name = document.getElementById('productName').value.trim();
         const price = Number(document.getElementById('productPrice').value);
         const image = document.getElementById('productImage').value.trim() || 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=900&q=80';
+        const description = document.getElementById('productDescription').value.trim();
 
-        if (!name || !price) return;
+        if (!name || !price || !description) return;
 
-        products.unshift({
-          id: Date.now(),
-          name,
-          price,
-          image,
-          category: document.getElementById('productCategory').value
-        });
+        if (!supabase) {
+          products.unshift(normalizeProduct({
+            id: `local-${Date.now()}`,
+            name,
+            price,
+            image,
+            category: document.getElementById('productCategory').value,
+            description
+          }));
+          renderProducts();
+          productForm.reset();
+          return;
+        }
 
-        renderProducts();
-        productForm.reset();
+        try {
+          const { error } = await supabase.from('products').insert([{
+            name,
+            price,
+            image,
+            category: document.getElementById('productCategory').value,
+            description
+          }]);
+
+          if (error) throw error;
+          productForm.reset();
+          await loadProducts();
+        } catch (err) {
+          console.error(err);
+          alert('Unable to save product. Make sure the Supabase products table exists.');
+        }
       });
 
       document.getElementById('cancel').addEventListener('click', () => productForm.reset());
@@ -903,8 +962,8 @@
 
       document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
 
-      renderProducts();
       saveCart();
+      loadProducts();
       syncOwnerSession();
     })();
   </script>
